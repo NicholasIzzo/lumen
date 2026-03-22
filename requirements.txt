@@ -1,0 +1,6 @@
+anthropic
+python-dotenv
+discord-webhook
+requests
+docker
+schedule
