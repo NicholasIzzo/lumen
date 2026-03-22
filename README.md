@@ -1,61 +1,104 @@
-# Guida Cloud per Principianti
+﻿# LUMEN — Homelab AI Ops Agent
 
-Guida pratica e open-source in italiano per chi vuole muovere i primi passi nel mondo del Cloud Computing — senza prerequisiti, senza acronimi inutili.
+> *"Lumen never sleeps."*
 
-> Pensata per chi sente parlare di "cloud" ogni giorno ma non sa ancora da dove iniziare.
+An AI-powered agent that autonomously monitors and manages a self-hosted homelab using Claude's tool use API.
+
+## What it does
+
+- Monitors all Docker containers every 4 hours
+- Auto-restarts crashed containers (with a configurable blacklist)
+- Checks disk usage, CPU and RAM
+- Sends alerts to Discord when issues are detected
+- Generates a daily report every morning at 8:00
+- Auto-updates container images every Sunday at 3:00 AM
+- Protects critical containers from accidental restarts (VPN stack, etc.)
+
+## Demo
+
+LUMEN detecting and fixing a crashed container autonomously:
+
+\\\
+[LUMEN] Tool: get_docker_containers({})
+[LUMEN] Tool: get_container_logs({'container_name': 'sonarr'})
+[LUMEN] Tool: restart_container({'container_name': 'sonarr'})
+[LUMEN] Completato.
+→ Alert sent to Discord
+\\\
+
+## Architecture
+
+\\\
+Claude API (claude-haiku — brain)
+          |
+          v
+ LUMEN Orchestrator (agent loop)
+          |
+    ------+------+----------+
+    v     v      v          v
+Docker  Disk  System   Container
+ API   Usage  Stats      Logs
+          |
+          v
+   Discord Alerts
+\\\
+
+## Stack
+
+- AI Brain: Claude API (Haiku) with tool use
+- Infrastructure: Self-hosted NAS + Docker
+- Alerting: Discord webhooks
+- Language: Python 3.11
+- Scheduler: schedule library
+
+## Setup
+
+1. Clone the repo
+\\\ash
+git clone https://github.com/NicholasIzzo/lumen.git
+cd lumen
+\\\
+
+2. Install dependencies
+\\\ash
+pip install -r requirements.txt
+\\\
+
+3. Configure environment
+\\\ash
+cp config/.env.example config/.env
+\\\
+
+4. Run
+\\\ash
+python3 src/agent.py
+\\\
+
+## Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| ANTHROPIC_API_KEY | Your Claude API key |
+| DISCORD_WEBHOOK_URL | Discord webhook for alerts |
+| NAS_HOST | Your NAS IP address |
+| NAS_USER | SSH username |
+| CHECK_INTERVAL_MINUTES | How often to check (default: 240) |
+
+## Cost
+
+Running on claude-haiku with 4-hour intervals costs approximately **\.22/month**.
+
+## Protected containers
+
+These containers are never restarted by LUMEN:
+- VPN stack (gluetun, qbittorrent-vpn)
+- Manually stopped services (mariadb, nextcloud)
+- External services (jellyfin)
+
+## License
+
+MIT
 
 ---
 
-## A chi è rivolta
-
-- Chi si avvicina all'IT e vuole capire cosa significa "andare sul cloud"
-- Sistemisti che vogliono strutturare le proprie conoscenze cloud
-- Chi vuole prepararsi alle certificazioni entry-level (AZ-900, AWS CCP, GCD)
-- Studenti di informatica che vogliono una guida pratica in italiano
-
----
-
-## Contenuti
-
-### Fondamenta
-- [Modelli di servizio cloud](docs/modelli-cloud.md) — IaaS, PaaS, SaaS spiegati con esempi reali
-- [Tipi di cloud](docs/tipi-di-cloud.md) — Pubblico, privato, ibrido: differenze e quando usarli
-
-### Provider
-- [I grandi provider cloud](docs/provider-cloud.md) — AWS, Azure e GCP a confronto
-
-### Certificazioni
-- [Roadmap certificazioni](docs/certificazioni.md) — Da dove iniziare, costi e consigli pratici
-
-### Casi d'uso
-- [Scenari reali](docs/casi-duso.md) — Come il cloud viene usato concretamente in azienda
-
-### Risorse
-- [Corsi e risorse gratuite](docs/risorse.md) — Dove studiare senza spendere
-
----
-
-## Roadmap contenuti
-
-- [x] Modelli di servizio (IaaS, PaaS, SaaS)
-- [x] Tipi di cloud
-- [x] Confronto provider
-- [x] Certificazioni entry-level
-- [x] Casi d'uso reali
-- [x] Risorse gratuite
-- [ ] Networking nel cloud (VPC, subnet, firewall)
-- [ ] Storage cloud (S3, Blob, GCS)
-- [ ] Serverless in pratica
-- [ ] Cloud per il homelab
-
----
-
-## Autore
-
-**Nicholas Izzo** — Sistemista, studente L31 Informatica (specializzazione AI) @ Università Pegaso
-
-[nicholasiszzo.github.io](https://NicholasIzzo.github.io) · [Homelab](https://github.com/NicholasIzzo/homelab) · [AI Practical Guide](https://github.com/NicholasIzzo/ai-practical-guide)
-
----
-
-> *"Il cloud non è qualcosa di magico — è solo il computer di qualcun altro. Ma usarlo bene fa tutta la differenza."*
+*Built with Claude API + Python — Running 24/7 on a self-hosted NAS*
