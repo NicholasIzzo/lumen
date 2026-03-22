@@ -1,103 +1,40 @@
-﻿# LUMEN — Homelab AI Ops Agent
+﻿# LUMEN — AI Homelab Suite
 
 > *"Lumen never sleeps."*
 
-An AI-powered agent that autonomously monitors and manages a self-hosted homelab using Claude's tool use API.
+A collection of AI-powered agents for autonomous homelab management, built with Claude API.
 
-## What it does
+## Projects
 
-- Monitors all Docker containers every 4 hours
-- Auto-restarts crashed containers (with a configurable blacklist)
-- Checks disk usage, CPU and RAM
-- Sends alerts to Discord when issues are detected
-- Generates a daily report every morning at 8:00
-- Auto-updates container images every Sunday at 3:00 AM
-- Protects critical containers from accidental restarts (VPN stack, etc.)
+### 1. Ops Agent
+Monitors and heals Docker infrastructure autonomously.
+- Checks containers, disk, CPU and RAM every 4 hours
+- Auto-restarts crashed containers
+- Daily reports and weekly auto-updates via Discord
 
-## Demo
+### 2. Research Pipeline
+Multi-agent system for autonomous research on any topic.
+- 5 specialized agents: Planner, Researcher, Analyst, Writer, Critic
+- Full report delivered to Discord
+- Cost: ~0.01 per research run
 
-LUMEN detecting and fixing a crashed container autonomously:
-
-\\\
-[LUMEN] Tool: get_docker_containers({})
-[LUMEN] Tool: get_container_logs({'container_name': 'sonarr'})
-[LUMEN] Tool: restart_container({'container_name': 'sonarr'})
-[LUMEN] Completato.
-→ Alert sent to Discord
-\\\
-
-## Architecture
-
-\\\
-Claude API (claude-haiku — brain)
-          |
-          v
- LUMEN Orchestrator (agent loop)
-          |
-    ------+------+----------+
-    v     v      v          v
-Docker  Disk  System   Container
- API   Usage  Stats      Logs
-          |
-          v
-   Discord Alerts
-\\\
+### 3. Network Monitor (coming soon)
+AI-powered personal NOC for home network monitoring.
 
 ## Stack
 
-- AI Brain: Claude API (Haiku) with tool use
+- AI: Claude API (Haiku) with tool use
 - Infrastructure: Self-hosted NAS + Docker
 - Alerting: Discord webhooks
 - Language: Python 3.11
-- Scheduler: schedule library
-
-## Setup
-
-1. Clone the repo
-\\\ash
-git clone https://github.com/NicholasIzzo/lumen.git
-cd lumen
-\\\
-
-2. Install dependencies
-\\\ash
-pip install -r requirements.txt
-\\\
-
-3. Configure environment
-\\\ash
-cp config/.env.example config/.env
-\\\
-
-4. Run
-\\\ash
-python3 src/agent.py
-\\\
-
-## Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| ANTHROPIC_API_KEY | Your Claude API key |
-| DISCORD_WEBHOOK_URL | Discord webhook for alerts |
-| NAS_HOST | Your NAS IP address |
-| NAS_USER | SSH username |
-| CHECK_INTERVAL_MINUTES | How often to check (default: 240) |
 
 ## Cost
 
-Running on claude-haiku with 4-hour intervals costs approximately **\.22/month**.
+All three projects together cost approximately **1/month** in API credits.
 
-## Protected containers
+## Author
 
-These containers are never restarted by LUMEN:
-- VPN stack (gluetun, qbittorrent-vpn)
-- Manually stopped services (mariadb, nextcloud)
-- External services (jellyfin)
-
-## License
-
-MIT
+Nicholas Izzo — Systems Administrator, Cloud Enthusiast, Self-Hosting Advocate
 
 ---
 
